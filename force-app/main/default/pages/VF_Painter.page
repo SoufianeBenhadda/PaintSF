@@ -1,0 +1,87 @@
+<apex:page showHeader="false" controller="CTRL_VFPainter" >
+    <script src="https://cdn.jsdelivr.net/npm/spainter@1.3.1/index.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/spainter@1.3.1/index.css"/>
+    <style>
+    .savingButton{
+    background: #007BFF;
+    color: white !important;
+    border: none;
+    border-radius: 25px;
+    padding: 5px 10px;
+    font-size: 13px !important;
+    cursor: pointer;
+    }
+    </style>
+        <button class="savingButton" onclick="callActionFunction()">save to files</button>
+        <apex:form id="theForm" >
+            <apex:actionFunction action="{!getDrawing}"  oncomplete="handleResult(event);" name="getDrawing" rerender="handleResult" >
+                <apex:param assignTo="{!strImageBlob}" name="imageBlob" value=""/>
+            </apex:actionFunction>
+            
+             <div id="containerPainter"></div>
+                
+                </apex:form>
+                <apex:outputPanel id="handleResult">
+                    <script>
+                         function handleResult(event) {
+                        showSuccessToast()
+                        toggleDivVisibility()
+                        }
+                        function showSuccessToast() {
+                            sforce.one.showToast({
+                                "title": "Success!",
+                                "message": "Image saved to files successfully",
+                                "type": "success"
+                            });
+                        }
+                        function toggleDivVisibility() {
+                        var mySpinner = document.getElementById('mySpinner');
+                        
+                        if (showSpinner) {
+                            mySpinner.style.display = 'none'; // Hide the div
+                            showSpinner = false;
+                        } else {
+                            mySpinner.style.display = 'block'; // Show the div
+                            showSpinner = true;
+                        }
+                    }
+                    </script>
+                </apex:outputPanel>
+            <script>
+                var p = new Painter(containerPainter);
+                function callActionFunction(){
+                    toggleDivVisibility()
+                    getDrawing(document.getElementsByTagName('canvas')[0].toDataURL());
+                    
+                }
+                function toggleDivVisibility() {
+                var mySpinner = document.getElementById('mySpinner');
+                
+                if (showSpinner) {
+                    mySpinner.style.display = 'none'; // Hide the div
+                    showSpinner = false;
+                } else {
+                    mySpinner.style.display = 'block'; // Show the div
+                    showSpinner = true;
+                }
+            }
+            </script>
+            <script>
+                var showSpinner=false;
+            </script>
+<apex:slds />
+<div id="mySpinner" style="display: none;"  class="slds-scope">
+<apex:form id="form">
+    <!-- SPINNER -->
+            <div id="spinner" class="slds-spinner_container" >
+                <div role="status" class="slds-spinner slds-spinner--large slds-spinner--brand">
+                    <div class="slds-spinner__dot-a"></div>
+                    <div class="slds-spinner__dot-b"></div>
+                </div>
+            </div>
+    <!-- / SPINNER -->
+</apex:form>
+</div>
+    
+    
+</apex:page>
